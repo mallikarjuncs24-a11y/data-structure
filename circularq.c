@@ -1,62 +1,87 @@
-#include<stdio.h>
-#include<string.h>
-int q[5];
-int front = -1;
-int rear = -1;
-int cap = 5;
-void insert(){
-    printf("Enter the element to insert : ");
-    int e;
-    scanf("%d",&e);
-    if(front==(rear+1)%cap)
-    
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 3
+
+int queue[MAX];
+int front = -1, rear = -1;
+
+void insert()
+{
+    int value;
+
+    if ((rear + 1) % MAX == front)
     {
-        printf("Queue overflow \n") ;
+        printf("Queue overflow\n");
         return;
     }
-    
-    if(front==-1) front++;
-    rear = (rear+1)%cap;
-    q[rear] = e;  
+
+    printf("Enter value to insert: ");
+    scanf("%d", &value);
+
+    if (front == -1)
+        front = rear = 0;
+    else
+        rear = (rear + 1) % MAX;
+
+    queue[rear] = value;
 }
-void delete(){
-    if(front==-1){
-        printf("Queue underflow \n");
-        return ;
+
+void delete()
+{
+    if (front == -1)
+    {
+        printf("Queue is empty\n");
+        return;
     }
-    int n;
-    n = q[front];
-    if (front == rear) {
+
+    printf("Deleted element: %d\n", queue[front]);
+
+    if (front == rear)
         front = rear = -1;
-    } else {
-        front = (front + 1) % cap;
-    }
-    
-    printf("%d is deleted \n",n);
-
+    else
+        front = (front + 1) % MAX;
 }
-void display(){
-    if(front==-1){
-        printf("Queue underflow");
-        return ;
+
+void display()
+{
+    if (front == -1)
+    {
+        printf("Queue is empty\n");
+        return;
     }
-    for(int i=front;i!=rear;i=(i+1)%cap){
-        printf("%d \n",q[i]);
+
+    printf("Queue elements: ");
+    int i = front;
+    while (1)
+    {
+        printf("%d ", queue[i]);
+        if (i == rear)
+            break;
+        i = (i + 1) % MAX;
     }
-    printf("%d",q[rear]);
+    printf("\n");
 }
-void main(){
-    printf("Enter the opertaion : \n");
-    printf("insert,delete or display\n");
-    printf("Enter quit to quit\n");
-    while(1){
-        char choice[20];
-         scanf("%s",choice);
-         if(strcmp(choice,"quit")==0) break;
-         if(strcmp(choice,"insert")==0) insert();
-         if(strcmp(choice,"delete")==0) delete();
-         if(strcmp(choice,"display")==0) display();
+
+int main()
+{
+    int choice;
+
+    while (1)
+    {
+        printf("\n1. Insert  2. Delete  3. Display  4. Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1: insert(); break;
+            case 2: delete(); break;
+            case 3: display(); break;
+            case 4: exit(0);
+            default: printf("Invalid choice\n");
+        }
     }
 
-
+    return 0;
 }

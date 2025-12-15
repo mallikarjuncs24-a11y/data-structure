@@ -1,57 +1,96 @@
-#include<stdio.h>
-#include<ctype.h>
-#include<conio.h>
+#include <stdio.h>
+#include <string.h>
 
+int idx = 0, pos = 0, length, top = -1;
+char sym, temp, infix[20], postfix[20], stack[20];
 
-char stack[50];
-int top = -1;
-void push(char c){
-    stack[++top] = c;
+void push(char symbol)
+{
+    if (top == 19)
+        printf("Stack overflow\n");
+    else
+        stack[++top] = symbol;
 }
-char pop(){
-    if(top==-1) return -1;
-    return stack[top--];
+
+char pop()
+{
+    if (top == -1)
+    {
+        printf("Stack underflow\n");
+        return '\0';
+    }
+    else
+        return stack[top--];
 }
 
-char infix[50];
-char postfix[50];
-int pr(char c){
-    
-    if(c=='*' || c=='/') return 2;
-    if(c=='+' || c=='-') return 1;
+int pred(char symbol)
+{
+    switch (symbol)
+    {
+        case '^': return 3;
+        case '*':
+        case '/': return 2;
+        case '+':
+        case '-': return 1;
+        case '(': return -1;
+        default: return 0;
+    }
+}
+
+void infixpostfix()
+{
+    length = strlen(infix);
+    push('(');
+    infix[length++] = ')';
+    infix[length] = '\0';
+
+    while (idx < length)
+    {
+        sym = infix[idx];
+
+        switch (sym)
+        {
+            case '(':
+                push(sym);
+                break;
+
+            case ')':
+                temp = pop();
+                while (temp != '(')
+                {
+                    postfix[pos++] = temp;
+                    temp = pop();
+                }
+                break;
+
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+            case '^':
+                while (pred(sym) <= pred(stack[top]))
+                {
+                    postfix[pos++] = pop();
+                }
+                push(sym);
+                break;
+
+            default:
+                postfix[pos++] = sym;
+        }
+        idx++;
+    }
+    postfix[pos] = '\0';
+}
+
+int main()
+{
+    printf("Enter the infix exp: ");
+    scanf("%s", infix);
+
+    infixpostfix();
+
+    printf("Postfix exp = %s\n", postfix);
     return 0;
 }
 
-void main(){
-    printf("Enter the infix expression : \n");
-    scanf("%s",infix);
-    int i=0,k=0;
-
-    while(infix[i]!='\0'){
-        char c = infix[i];
-        if(c=='('){
-            push(c);
-        }
-        else if(c==')'){
-            while(top!=-1&&staAk[top]!='('){
-                postfix[k++] =Apop();
-            }
-            pop();
-        }
-        else if(isalnum(c)){
-            postfix[k++] = c;
-        }
-        else{
-            while(top!=-1&&pr(stack[top])>=pr(c)){
-                postfix[k++] = pop();
-            }
-            push(c);
-        }
-        i++;
-    }
-    while(top!=-1){
-        postfix[k++] = pop();
-    }
-    postfix[k]='\0';
-    printf("Postfix expression is : %s",postfix);
-}

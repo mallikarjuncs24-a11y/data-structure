@@ -1,78 +1,162 @@
-#include<stdio.h>
-#include<conio.h>
-#include<stdlib.h>
-struct Node{
-    int val;
-    struct Node* next;
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+    int data;
+    struct Node *next;
 };
-struct Node* createNode(int data){
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->next = NULL;
-    newNode->val = data;
-    return newNode;
+
+struct Node *head = NULL;
+
+void create()
+{
+    int n, value;
+    struct Node *temp, *newNode;
+
+    printf("Enter number of nodes: ");
+    scanf("%d", &n);
+
+    head = NULL;  // reset list
+    for (int i = 0; i < n; i++)
+    {
+        newNode = (struct Node *)malloc(sizeof(struct Node));
+        printf("Enter data: ");
+        scanf("%d", &value);
+
+        newNode->data = value;
+        newNode->next = NULL;
+
+        if (head == NULL)
+            head = temp = newNode;
+        else
+        {
+            temp->next = newNode;
+            temp = newNode;
+        }
+    }
 }
 
-struct Node* head = NULL;
-void insertB(){
-    printf("Enter the value of the node : ");
-    int data;
-    scanf("%d",&data);
-    struct Node* newNode = createNode(data);
-    if(head==NULL){
-        head = newNode;return;
-    }
+void insertAtBeginning()
+{
+    struct Node *newNode;
+    int value;
+
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+    printf("Enter data: ");
+    scanf("%d", &value);
+
+    newNode->data = value;
     newNode->next = head;
     head = newNode;
 }
-void insertE(){
-    printf("Enter the value of the node : ");
-    int data;
-    scanf("%d",&data);
-    struct Node* newNode = createNode(data);
-    if(head==NULL){
-        head = newNode;return;
-    }
-    struct Node* cur = head;
-    while(cur->next)
+
+void insertAtEnd()
+{
+    struct Node *newNode, *temp;
+    int value;
+
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+    printf("Enter data: ");
+    scanf("%d", &value);
+
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL)
     {
-        cur = cur->next;
+        head = newNode;
+        return;
     }
-    cur->next = newNode;
+
+    temp = head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
 }
 
-void insertP(){
-    printf("Enter value and position of node : ");
-    int data,pos;
-    scanf("%d %d",&data,&pos);
-    struct Node* dummy = createNode(0);
-    dummy->next = head;
-   
-    struct Node* cur = head;int count = 0;
-    while(cur && count<pos-1){
-        cur = cur->next;count++;
+void insertAtPosition()
+{
+    struct Node *newNode, *temp;
+    int value, pos, i;
+
+    printf("Enter position: ");
+    scanf("%d", &pos);
+
+    if (pos == 1)
+    {
+        insertAtBeginning();
+        return;
     }
-    struct Node* newNode = createNode(data);
-    newNode->next = cur->next;
-    cur->next = newNode;
+
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+    printf("Enter data: ");
+    scanf("%d", &value);
+
+    newNode->data = value;
+    temp = head;
+
+    for (i = 1; i < pos - 1 && temp != NULL; i++)
+        temp = temp->next;
+
+    if (temp == NULL)
+    {
+        printf("Invalid position\n");
+        free(newNode);
+        return;
+    }
+
+    newNode->next = temp->next;
+    temp->next = newNode;
 }
 
-void display(){
-    struct Node* cur = head;
-    while(cur){
-        printf("%d ",cur->val);
-        cur = cur->next;
+void display()
+{
+    struct Node *temp = head;
+
+    if (head == NULL)
+    {
+        printf("List is empty\n");
+        return;
     }
+
+    printf("Linked list: ");
+    while (temp != NULL)
+    {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
 }
 
-void main(){
-    printf("Enter 1 to insert at beginning,2 to insert at end ,3 to insert at a position and 4 to display\n");
+int main()
+{
     int choice;
 
-    while(1){
-        scanf("%d",&choice);
-        if(choice==1) insertB();
-        if(choice==2) insertE();
-        if(choice==3) insertP();
-        if(choice==4) display();
+    while (1)
+    {
+        printf("\n1. Create List"
+               "\n2. Insert at Beginning"
+               "\n3. Insert at Position"
+               "\n4. Insert at End"
+               "\n5. Display"
+               "\n6. Exit\n");
+
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1: create(); break;
+            case 2: insertAtBeginning(); break;
+            case 3: insertAtPosition(); break;
+            case 4: insertAtEnd(); break;
+            case 5: display(); break;
+            case 6: exit(0);
+            default: printf("Invalid choice\n");
+        }
     }
+
+    return 0;
 }
